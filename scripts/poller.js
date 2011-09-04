@@ -1,10 +1,10 @@
 var poller = require('../lib/poller')
   , Twitter = require('twitter')
   , twit = new Twitter({
-        consumer_key: 'DROXwWEJw3tXjU4YJpZLw',
-        consumer_secret: 'pwv1Nvlvi3PcQ9fwkojiUd933prElu60Iu8FNAonwcI',
-        access_token_key: '9881092-BZ6uQiCxPvq4qKhsNu4ptEl2jDXbH9O2HKfVnFDCkA',
-        access_token_secret: '6LNRCRMdg6LE2egHAZLFLcVUWxBDIvgaafG6LKCtec4'
+        consumer_key: process.env.npm_package_config_twitter_consumer_key
+      , consumer_secret: process.env.npm_package_config_twitter_consumer_secret
+      , access_token_key: process.env.npm_package_config_twitter_access_token
+      , access_token_secret: process.env.npm_package_config_twitter_access_token_secret
     })
   , links     = require('../lib/links_parser').Parser
   , mongodb = require('mongodb')
