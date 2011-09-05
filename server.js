@@ -226,7 +226,7 @@ app.get('/events.json', function(req, res){
                  , event.name
                  , event.description
                  , event.author
-                ].join(" ").search(new RegExp(req.query.q)) === -1) {
+                ].join(" ").search(new RegExp(req.query.q, "i")) === -1) {
                 return;
             }
 
