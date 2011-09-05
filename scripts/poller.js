@@ -56,7 +56,6 @@ function processEvent(job, collection, event, eventsCollection) {
 
     poll.on('data', function(res) {
         if (typeof res.results !== "undefined") {
-            console.log(res);
             res.results.forEach(function(json) {
                 var tweet = {
                     tweetId   : json.id_str
@@ -77,9 +76,7 @@ function processEvent(job, collection, event, eventsCollection) {
                                  })
                 };
 
-                // don't process existing tweet
                 if (event.tweets.map(mapper('tweetId')).indexOf(tweet.tweetId) !== -1) {
-                    console.log('tweet exists');
                     return;
                 }
 
@@ -92,29 +89,26 @@ function processEvent(job, collection, event, eventsCollection) {
                 eventsCollection.save(event);
 
                 var relevantTalks = [];
-
-                event.talks.forEach(function(talk) {
-                    if (talk.tweets.map(mapper('tweetId')).indexOf(tweet.tweetId) !== -1 ||
-                        tweet.hashes.indexOf(talk.hash) === -1) {
-                        eventsCollection.save(event);
-                        return;
-                    }
-
-                    if (talk.participants.indexOf(tweet.user) === -1) {
-                        talk.participants.push(tweet.user);
-                    }
-
-                    talk.tweets.push(tweet);
-
-                    eventsCollection.save(event);
-
-                    relevantTalks.push(talk);
-                });
-
+//                event.talks.forEach(function(talk) {
+//                    if (talk.tweets.map(mapper('tweetId')).indexOf(tweet.tweetId) !== -1 ||
+//                        tweet.hashes.indexOf(talk.hash) === -1) {
+//                        console.log('tweet exists in the talk');
+//                        return;
+//                    }
+//
+//                    if (talk.participants.indexOf(tweet.user) === -1) {
+//                        talk.participants.push(tweet.user);
+//                    }
+//
+//                    talk.tweets.push(tweet);
+//
+//                    eventsCollection.save(event);
+//
+//                    relevantTalks.push(talk);
+//                });
                 links.parse(tweet.tweet, function(media) {
                     if (media.type === "error" ||
                         event.assets.map(mapper('url')).indexOf(media.url) !== -1) {
-                        eventsCollection.save(event);
                         return;
                     }
 
@@ -165,7 +159,6 @@ function createJob(callback) {
 
                 lastCreatedAt = ((lastJob || {}).createdAt || new Date(0));
 
-                console.log(lastCreatedAt);
 
                 var cursor = collection.find({status: 'new', 'createdAt': {'$gte': lastCreatedAt}}, {tailable: true, timeout: false});
 
@@ -174,12 +167,9 @@ function createJob(callback) {
                         throw err;
                     }
 
-                    console.log(job);
                     job.status = 'run';
 
                     collection.save(job);
-
-                    console.log(job);
 
                     callback(job, collection);
                 });
