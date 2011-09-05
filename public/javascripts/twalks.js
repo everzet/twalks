@@ -164,32 +164,38 @@
                 $tabsContent = this.$('.event-footer-content');
 
             this.$('.tabs .tweets a').click(function() {
+                App.Routers.Events.showProgressBar();
                 self.$('.tabs li.active').removeClass('active');
                 $(this).parent().addClass('active');
 
                 self.tweetsCollection.fetch({ success: function() {
                     var view = new App.Views.TweetsList({ collection: self.tweetsCollection });
                     $tabsContent.empty().append(view.render().el);
+                    App.Routers.Events.hideProgressBar();
                 }});
             }).click();
 
             this.$('.tabs .photos a').click(function() {
+                App.Routers.Events.showProgressBar();
                 self.$('.tabs li.active').removeClass('active');
                 $(this).parent().addClass('active');
 
                 self.photosCollection.fetch({ success: function() {
                     var view = new App.Views.PhotosList({ collection: self.photosCollection });
                     $tabsContent.empty().append(view.render().el);
+                    App.Routers.Events.hideProgressBar();
                 }});
             });
 
             this.$('.tabs .videos a').click(function() {
+                App.Routers.Events.showProgressBar();
                 self.$('.tabs li.active').removeClass('active');
                 $(this).parent().addClass('active');
 
                 self.videosCollection.fetch({ success: function() {
                     var view = new App.Views.VideosList({ collection: self.videosCollection });
                     $tabsContent.empty().append(view.render().el);
+                    App.Routers.Events.hideProgressBar();
                 }});
             });
 
@@ -334,6 +340,9 @@
           , 'events/:id/edit':      'editEvent'
           , 'events':               'listEvents'
           , 'events/:id':           'showEvent'
+          , 'events/:id/tweets':    'showEventTweets'
+          , 'events/:id/photos':    'showEventPhotos'
+          , 'events/:id/videos':    'showEventVideos'
         }
       , initialize: function() {
             this.$container     = $('#bb-content');
@@ -512,12 +521,7 @@
             $('li.active', this.$navigation).removeClass('active');
 
             var event = new App.Models.Event({ 'id': id })
-              , view  = new App.Views.Event({
-                    model:             event
-                  , tweetsCollection:  new App.Collections.EventTweets([], { 'eventId': id })
-                  , photosCollection:  new App.Collections.EventPhotos([], { 'eventId': id })
-                  , videosCollection:  new App.Collections.EventVideos([], { 'eventId': id })
-                })
+              , view  = new App.Views.Event({model: event})
               , self  = this
             ;
 
@@ -532,6 +536,30 @@
                     alertMessage('warning', 'We encountered an error fetching this event.');
                 }
             });
+        }
+      , showEventTweets: function(id) {
+            this.showProgressBar();
+            this.$('.tabs li.active').removeClass('active');
+            $(this).parent().addClass('active');
+
+            var event  = new App.Models.Event({ 'id': id })
+                tweets = new App.Collections.EventTweets([], { 'eventId': id })
+              , view   = new App.Views.TweetsList({ collection: tweets })
+              , self   = this
+            ;
+
+            tweets.fetch({
+                success: function() {
+                    document.title = event.get('name') + ' - Tweets :: Twalks';
+                    this.$('.event-footer-content').empty().append(view.render().el);
+                    self.hideProgressBar();
+                }
+              , error: function() {
+                  alertMessage('warning', 'We encountered an error fetching this event.');
+                  this.$('.tabs li.active').removeClass('active');
+              }
+            });
+
         }
       , showProgressBar: function() {
             $('li.user', this.$secondaryNav).stop().hide();
