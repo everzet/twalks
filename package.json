@@ -1,17 +1,27 @@
 {
-    "name":          "twalks"
-  , "version":       "0.0.1"
-  , "private":       true
-  , "dependencies":  {
-      "express":    "2.4.3"
+    "name":         "twalks"
+  , "version":      "0.0.1"
+  , "private":      true
+  , "dependencies": {
+      "express":          "2.4.3"
     , "express-mongoose": "0.0.2"
-    , "everyauth":  "0.2.18"
-    , "ejs":        "0.4.3"
-    , "mongoose":   "2.0.1"
-    , "twitter":    "0.1.17"
-    , "nko":        "0.0.9"
-    , "embedly":    "0.3.4"
-    , "mongodb":    "0.9.3"
-    , "log":        "1.2.0"
+    , "everyauth":        "0.2.18"
+    , "ejs":              "0.4.3"
+    , "mongoose":         "2.0.1"
+    , "twitter":          "0.1.17"
+    , "nko":              "0.0.9"
+    , "embedly":          "0.3.4"
+    , "mongodb":          "0.9.3"
+    , "log":              "1.2.0"
+  }
+  , "config":       {
+      "twitter-consumer-key":        "DROXwWEJw3tXjU4YJpZLw"
+    , "twitter-consumer-secret":     "pwv1Nvlvi3PcQ9fwkojiUd933prElu60Iu8FNAonwcI"
+    , "twitter-access-token":        "9881092-BZ6uQiCxPvq4qKhsNu4ptEl2jDXbH9O2HKfVnFDCkA"
+    , "twitter-access-token-secret": "6LNRCRMdg6LE2egHAZLFLcVUWxBDIvgaafG6LKCtec4"
+    , "mongodb-user":                "user"
+    , "mongodb-password":            "111111"
+    , "mongodb-server":              "staff.mongohq.com:10090"
+    , "mongodb-database":            "twalks"
   }
 }

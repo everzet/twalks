@@ -1,27 +1,4 @@
 /**
- * deploy check-in
- */
-require('nko')('UJuIrlX5JM5B0V/g');
-
-/**
- * Params
- */
-var parameters = {
-    twitter: {
-        consumerKey:       'DROXwWEJw3tXjU4YJpZLw'
-      , consumerSecret:    'pwv1Nvlvi3PcQ9fwkojiUd933prElu60Iu8FNAonwcI'
-      , accessToken:       '9881092-BZ6uQiCxPvq4qKhsNu4ptEl2jDXbH9O2HKfVnFDCkA'
-      , accessTokenSecret: '6LNRCRMdg6LE2egHAZLFLcVUWxBDIvgaafG6LKCtec4'
-    },
-    mongodb: {
-        user:     'user'
-      , password: '111111'
-      , server:   'staff.mongohq.com:10090'
-      , database: 'twalks'
-    }
-};
-
-/**
  * Module dependencies.
  */
 var express   = require('express')
@@ -37,25 +14,34 @@ var express   = require('express')
 ;
 
 everyauth.twitter
-    .consumerKey(parameters.twitter.consumerKey)
-    .consumerSecret(parameters.twitter.consumerSecret)
+    .consumerKey(process.env.npm_package_config_twitter_consumer_key)
+    .consumerSecret(process.env.npm_package_config_twitter_consumer_secret)
     .findOrCreateUser(function(session, accessToken, accessTokenSecret, userData) {
         return users.createUserFromTwitterData(userData);
     })
     .redirectPath('/')
 ;
+console.log(process.env);
+console.log('mongodb://'+
+ process.env.npm_package_config_mongodb_user+':'+process.env.npm_package_config_mongodb_password+'@'+
+ process.env.npm_package_config_mongodb_server+'/'+process.env.npm_package_config_mongodb_database);
 
 mongoose
-    .connect('mongodb://'+parameters.mongodb.user+':'+parameters.mongodb.password+'@'+parameters.mongodb.server+'/'+parameters.mongodb.database)
+  .connect((process.env.npm_package_config_mongodb_user ?
+    'mongodb://'+
+    process.env.npm_package_config_mongodb_user+':'+process.env.npm_package_config_mongodb_password+'@'+
+    process.env.npm_package_config_mongodb_server+'/'+process.env.npm_package_config_mongodb_database :
+    'mongodb://localhost:27017/twalks'
+  ))
 ;
 
 
 var app  = module.exports = express.createServer()
   , twit = new Twitter({
-        consumer_key: parameters.twitter.consumerKey,
-        consumer_secret: parameters.twitter.consumerSecret,
-        access_token_key: parameters.twitter.accessToken,
-        access_token_secret: parameters.twitter.accessTokenSecret
+        consumer_key: process.env.npm_package_config_twitter_consumer_key
+      , consumer_secret: process.env.npm_package_config_twitter_consumer_secret
+      , access_token_key: process.env.npm_package_config_twitter_access_token
+      , access_token_secret: process.env.npm_package_config_twitter_access_token_secret
     });
 
 var child, jobs = [];
